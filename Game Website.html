@@ -16,6 +16,7 @@
         background: linear-gradient(to right, #1e1e2f, #2c3e50);
         color: #fff;
         overflow-x: hidden;
+        scroll-behavior: smooth;
       }
       nav {
         display: flex;
@@ -44,12 +45,50 @@
       nav ul li a:hover {
         color: #00f0ff;
       }
+      /* Home Screen */
+      .home-screen {
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 1rem;
+        background: rgba(0, 0, 0, 0.4);
+        margin-bottom: 2rem;
+      }
+      .home-screen h1 {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        color: #00f0ff;
+      }
+      .home-screen p {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        color: #ccc;
+      }
+      .btn-explore {
+        background-color: #00f0ff;
+        color: #000;
+        padding: 1rem 2rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        border: none;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+      }
+      .btn-explore:hover {
+        background-color: #00c1d4;
+      }
       header {
-        padding: 3rem 1rem;
+        padding: 2rem 1rem;
         text-align: center;
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
       }
       header h2 {
         font-size: 2.5rem;
@@ -63,7 +102,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 2rem;
-        padding: 3rem;
+        padding: 0 3rem 3rem 3rem;
       }
       .game-card {
         background: rgba(255, 255, 255, 0.05);
@@ -176,12 +215,19 @@
     <nav>
       <h1>Ousainou</h1>
       <ul>
+        <li><a href="#home-screen">Home</a></li>
         <li><a href="#games">Games</a></li>
         <li><a href="#submission">Submit Your Game</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
+
+    <section class="home-screen" id="home-screen">
+      <h1>Welcome to My Game Portfolio</h1>
+      <p>Discover original games created with passion and creativity.</p>
+      <a href="#games" class="btn-explore">Explore Games</a>
+    </section>
 
     <header>
       <h2>Ousainou's Game Portfolio</h2>
@@ -191,7 +237,7 @@
     <section class="games-section" id="games">
       <!-- Ball Game -->
       <div class="game-card">
-        <img src="volly-ball-icon-line-for-web-presentation-logo-icon-symbol-free-vector.jpg" alt="Ball Game" />
+        <img src="https://static.vecteezy.com/system/resources/previews/009/385/581/non_2x/volleyball-line-icon-sport-ball-outline-icon-free-vector.jpg" alt="Ball Game" />
         <h2>Bouncing Ball Game</h2>
         <p>A power-up arcade game where speed increases and chaos ensues!</p>
         <a href="#">Play Now</a>
@@ -199,7 +245,7 @@
 
       <!-- Drawing Game -->
       <div class="game-card">
-        <img src="pixel-art-illustration-pencil-pixelated-pencil-pencil-office-icon-pixelated-for-the-pixel-art-game-and-icon-for-website-and-video-game-old-school-retro-vector.jpg" alt="Drawing Game" />
+        <img src="https://static.vecteezy.com/system/resources/previews/030/490/373/original/pixel-art-illustration-pencil-pixelated-pencil-pencil-office-icon-pixelated-for-the-pixel-art-game-and-icon-for-website-and-video-game-old-school-retro-vector.jpg" alt="Drawing Game" />
         <h2>Drawing Game</h2>
         <p>Let your imagination run wild in this fun and simple drawing experience!</p>
         <a href="#">Play Now</a>
