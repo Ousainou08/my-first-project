@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Drawing Game</title>
+  <style>
+    body {
+      margin: 0;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      margin-top: 20px;
+      cursor: crosshair;
+      border-radius: 10px;
+    }
+
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .controls input[type="color"],
+    .controls input[type="range"],
+    .controls button {
+      padding: 5px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎨 Drawing Game</h1>
+
+  <canvas id="drawCanvas" width="800" height="500"></canvas>
+
+  <div class="controls">
+    <label>
+      🖌️ Color:
+      <input type="color" id="colorPicker" value="#000000" />
+    </label>
+
+    <label>
+      🪄 Size:
+      <input type="range" id="brushSize" min="1" max="50" value="5" />
+    </label>
+
+    <button id="clearBtn">🧹 Clear</button>
+    <button id="saveBtn">💾 Save</button>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('drawCanvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+    const brushSize = document.getElementById('brushSize');
+    const clearBtn = document.getElementById('clearBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    let drawing = false;
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mouseout', () => drawing = false);
+
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!drawing) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ctx.fillStyle = colorPicker.value;
+      ctx.beginPath();
+      ctx.arc(x, y, brushSize.value / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    clearBtn.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    saveBtn.addEventListener('click', () => {
+      const link = document.createElement('a');
+      link.download = 'drawing.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  </script>
+
+</body>
+</html>

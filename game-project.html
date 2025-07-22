@@ -2,155 +2,397 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Catch the Falling Object Game</title>
+  <title>Bouncing Ball Game with Power-ups</title>
   <style>
     body {
       margin: 0;
       background: #222;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       height: 100vh;
       color: white;
       font-family: Arial, sans-serif;
+      user-select: none;
+      justify-content: center;
     }
     canvas {
-      background: #444;
-      display: block;
-      border: 2px solid #fff;
+      background: #333;
+      border: 3px solid #fff;
       border-radius: 10px;
+      display: block;
     }
     #score {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
       font-size: 24px;
       font-weight: bold;
-      user-select: none;
+      margin-bottom: 10px;
+    }
+    #restartBtn {
+      margin: 10px;
+      padding: 8px 16px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+      background-color: #ffd700;
+      color: #222;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    #restartBtn:hover {
+      background-color: #ffbf00;
     }
   </style>
 </head>
 <body>
+  <div id="score">Score: 0</div>
+  <button id="restartBtn">Restart</button>
+  <canvas id="gameCanvas" width="480" height="600"></canvas>
 
-<div id="score">Score: 0</div>
-<canvas id="gameCanvas" width="400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const restartBtn = document.getElementById('restartBtn');
 
-<script>
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
+    // Paddle
+    const paddle = {
+      width: 100,
+      height: 15,
+      x: canvas.width / 2 - 50,
+      y: canvas.height - 40,
+      speed: 8,
+      dx: 0,
+      maxWidth: 150
+    };
 
-  const basket = {
-    width: 80,
-    height: 20,
-    x: canvas.width / 2 - 40,
-    y: canvas.height - 40,
-    speed: 7,
-    dx: 0
-  };
+    // Balls array (to support multiple balls)
+    let balls = [];
 
-  const object = {
-    x: Math.random() * (canvas.width - 20),
-    y: 0,
-    size: 20,
-    speed: 3
-  };
-
-  let score = 0;
-
-  // Draw basket
-  function drawBasket() {
-    ctx.fillStyle = '#ffd700'; // gold color
-    ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
-  }
-
-  // Draw falling object
-  function drawObject() {
-    ctx.fillStyle = '#00bfff'; // deep sky blue
-    ctx.beginPath();
-    ctx.arc(object.x + object.size / 2, object.y + object.size / 2, object.size / 2, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Clear canvas
-  function clear() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  }
-
-  // Move basket
-  function moveBasket() {
-    basket.x += basket.dx;
-
-    // Keep basket inside canvas
-    if (basket.x < 0) basket.x = 0;
-    if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
-  }
-
-  // Move object
-  function moveObject() {
-    object.y += object.speed;
-
-    // Check if caught
-    if (
-      object.y + object.size >= basket.y &&
-      object.x + object.size > basket.x &&
-      object.x < basket.x + basket.width
-    ) {
-      score++;
-      document.getElementById('score').innerText = 'Score: ' + score;
-      resetObject();
+    function createBall() {
+      return {
+        x: canvas.width / 2,
+        y: paddle.y - 10,
+        radius: 10,
+        speed: 3,            // Start slower
+        dx: 3 * (Math.random() < 0.5 ? 1 : -1), // random left/right
+        dy: -3,
+        speedIncrement: 0.1, // increase slower
+        maxSpeed: 10
+      };
     }
 
-    // If missed (object goes below canvas)
-    if (object.y > canvas.height) {
-      alert('Game Over! Your score: ' + score);
+    // Blocks
+    const blockRowCount = 5;
+    const blockColumnCount = 7;
+    const blockWidth = 60;
+    const blockHeight = 20;
+    const blockPadding = 10;
+    const blockOffsetTop = 50;
+    const blockOffsetLeft = 30;
+
+    let blocks = [];
+
+    // Power-ups
+    const powerUps = [];
+    const powerUpSize = 20;
+
+    // Score
+    let score = 0;
+
+    // Create blocks array
+    function createBlocks() {
+      blocks = [];
+      for (let r = 0; r < blockRowCount; r++) {
+        blocks[r] = [];
+        for (let c = 0; c < blockColumnCount; c++) {
+          blocks[r][c] = {
+            x: 0,
+            y: 0,
+            status: 1,
+            // 25% chance to have power-up including the new duplicate power-up
+            hasPowerUp: Math.random() < 0.25,
+            powerUpType: null
+          };
+          // Assign powerUpType if block has power-up
+          if (blocks[r][c].hasPowerUp) {
+            const types = ['expand', 'speed', 'duplicate'];
+            blocks[r][c].powerUpType = types[Math.floor(Math.random() * types.length)];
+          }
+        }
+      }
+    }
+
+    createBlocks();
+
+    // Draw paddle
+    function drawPaddle() {
+      ctx.fillStyle = '#ffd700'; // gold
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    }
+
+    // Draw balls
+    function drawBalls() {
+      ctx.fillStyle = '#00bfff'; // deep sky blue
+      balls.forEach(ball => {
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+      });
+    }
+
+    // Draw blocks
+    function drawBlocks() {
+      for (let r = 0; r < blockRowCount; r++) {
+        for (let c = 0; c < blockColumnCount; c++) {
+          if (blocks[r][c].status === 1) {
+            const blockX = blockOffsetLeft + c * (blockWidth + blockPadding);
+            const blockY = blockOffsetTop + r * (blockHeight + blockPadding);
+            blocks[r][c].x = blockX;
+            blocks[r][c].y = blockY;
+            ctx.fillStyle = blocks[r][c].hasPowerUp ? '#ff6347' : '#4682b4'; // tomato or steelblue
+            ctx.fillRect(blockX, blockY, blockWidth, blockHeight);
+          }
+        }
+      }
+    }
+
+    // Draw power-ups
+    function drawPowerUps() {
+      powerUps.forEach((p) => {
+        let color = '#32cd32'; // limegreen
+        if (p.type === 'speed') color = '#ff4500'; // orangered
+        else if (p.type === 'duplicate') color = '#9370db'; // medium purple
+        ctx.fillStyle = color;
+        ctx.fillRect(p.x, p.y, powerUpSize, powerUpSize);
+      });
+    }
+
+    // Move paddle
+    function movePaddle() {
+      paddle.x += paddle.dx;
+      if (paddle.x < 0) paddle.x = 0;
+      if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+    }
+
+    // Move balls
+    function moveBalls() {
+      for (let i = balls.length - 1; i >= 0; i--) {
+        let ball = balls[i];
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+
+        // Bounce off walls
+        if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+          ball.dx = -ball.dx;
+        }
+        if (ball.y - ball.radius < 0) {
+          ball.dy = -ball.dy;
+        }
+
+        // Ball falls below paddle — remove ball
+        if (ball.y - ball.radius > canvas.height) {
+          balls.splice(i, 1);
+          if (balls.length === 0) {
+            alert('Game Over! Your score: ' + score);
+            resetGame();
+            return;
+          }
+          continue;
+        }
+
+        // Bounce off paddle
+        if (
+          ball.y + ball.radius >= paddle.y &&
+          ball.x >= paddle.x &&
+          ball.x <= paddle.x + paddle.width &&
+          ball.dy > 0
+        ) {
+          const hitPos = ball.x - (paddle.x + paddle.width / 2);
+          const normalizedHitPos = hitPos / (paddle.width / 2);
+          const maxBounceAngle = Math.PI / 3;
+
+          const bounceAngle = normalizedHitPos * maxBounceAngle;
+          const speed = Math.min(ball.speed, ball.maxSpeed);
+
+          ball.dx = speed * Math.sin(bounceAngle);
+          ball.dy = -speed * Math.cos(bounceAngle);
+        }
+      }
+    }
+
+    // Collision detection ball vs blocks
+    function collisionDetection() {
+      balls.forEach(ball => {
+        for (let r = 0; r < blockRowCount; r++) {
+          for (let c = 0; c < blockColumnCount; c++) {
+            const b = blocks[r][c];
+            if (b.status === 1) {
+              if (
+                ball.x > b.x &&
+                ball.x < b.x + blockWidth &&
+                ball.y - ball.radius < b.y + blockHeight &&
+                ball.y + ball.radius > b.y
+              ) {
+                ball.dy = -ball.dy;
+                b.status = 0;
+                score++;
+                scoreEl.textContent = 'Score: ' + score;
+
+                // Increase ball speed gently
+                ball.speed = Math.min(ball.speed + ball.speedIncrement, ball.maxSpeed);
+
+                // Adjust dx and dy proportionally to speed increase
+                const angle = Math.atan2(ball.dy, ball.dx);
+                ball.dx = ball.speed * Math.cos(angle);
+                ball.dy = ball.speed * Math.sin(angle);
+
+                // Spawn power-up if block had one
+                if (b.hasPowerUp) {
+                  spawnPowerUp(b.x + blockWidth / 2 - powerUpSize / 2, b.y + blockHeight, b.powerUpType);
+                }
+
+                // Check win condition
+                if (score === blockRowCount * blockColumnCount) {
+                  alert('You Win! Congratulations!');
+                  resetGame();
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Spawn power-up
+    function spawnPowerUp(x, y, type) {
+      powerUps.push({ x, y, dy: 3, type });
+    }
+
+    // Move power-ups down and check if caught
+    function movePowerUps() {
+      for (let i = powerUps.length - 1; i >= 0; i--) {
+        const p = powerUps[i];
+        p.y += p.dy;
+
+        if (
+          p.y + powerUpSize >= paddle.y &&
+          p.x + powerUpSize >= paddle.x &&
+          p.x <= paddle.x + paddle.width
+        ) {
+          applyPowerUp(p.type);
+          powerUps.splice(i, 1);
+          continue;
+        }
+
+        if (p.y > canvas.height) {
+          powerUps.splice(i, 1);
+        }
+      }
+    }
+
+    // Apply power-up effects
+    function applyPowerUp(type) {
+      if (type === 'expand') {
+        paddle.width = Math.min(paddle.width + 30, paddle.maxWidth);
+      } else if (type === 'speed') {
+        balls.forEach(ball => {
+          ball.speed = Math.min(ball.speed + 2, ball.maxSpeed);
+          const angle = Math.atan2(ball.dy, ball.dx);
+          ball.dx = ball.speed * Math.cos(angle);
+          ball.dy = ball.speed * Math.sin(angle);
+        });
+      } else if (type === 'duplicate') {
+        if (balls.length < 3) { // limit max balls
+          const newBalls = [];
+          balls.forEach(ball => {
+            // Duplicate ball with opposite dx direction and same speed/dy
+            newBalls.push({
+              x: ball.x,
+              y: ball.y,
+              radius: ball.radius,
+              speed: ball.speed,
+              dx: -ball.dx,
+              dy: ball.dy,
+              speedIncrement: ball.speedIncrement,
+              maxSpeed: ball.maxSpeed
+            });
+          });
+          balls = balls.concat(newBalls);
+        }
+      }
+    }
+
+    // Clear canvas
+    function clear() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Draw everything
+    function draw() {
+      clear();
+      drawPaddle();
+      drawBalls();
+      drawBlocks();
+      drawPowerUps();
+    }
+
+    // Update everything
+    function update() {
+      movePaddle();
+      moveBalls();
+      collisionDetection();
+      movePowerUps();
+    }
+
+    // Game loop
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Keyboard controls
+    function keyDownHandler(e) {
+      if (e.key === 'ArrowRight' || e.key === 'Right') {
+        paddle.dx = paddle.speed;
+      } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+        paddle.dx = -paddle.speed;
+      }
+    }
+
+    function keyUpHandler(e) {
+      if (
+        e.key === 'ArrowRight' || e.key === 'Right' ||
+        e.key === 'ArrowLeft' || e.key === 'Left'
+      ) {
+        paddle.dx = 0;
+      }
+    }
+
+    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener('keyup', keyUpHandler);
+
+    // Reset game
+    function resetGame() {
       score = 0;
-      document.getElementById('score').innerText = 'Score: ' + score;
-      resetObject();
+      scoreEl.textContent = 'Score: ' + score;
+      createBlocks();
+      paddle.width = 100;
+      paddle.x = canvas.width / 2 - paddle.width / 2;
+      balls = [createBall()];
+      powerUps.length = 0;
     }
-  }
 
-  // Reset object to top with random x position
-  function resetObject() {
-    object.x = Math.random() * (canvas.width - object.size);
-    object.y = 0;
-  }
+    restartBtn.addEventListener('click', () => {
+      resetGame();
+    });
 
-  // Update game frame
-  function update() {
-    clear();
-    drawBasket();
-    drawObject();
-    moveBasket();
-    moveObject();
-    requestAnimationFrame(update);
-  }
-
-  // Keyboard handlers
-  function keyDown(e) {
-    if (e.key === 'ArrowRight' || e.key === 'Right') {
-      basket.dx = basket.speed;
-    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
-      basket.dx = -basket.speed;
-    }
-  }
-
-  function keyUp(e) {
-    if (
-      e.key === 'ArrowRight' || e.key === 'Right' ||
-      e.key === 'ArrowLeft' || e.key === 'Left'
-    ) {
-      basket.dx = 0;
-    }
-  }
-
-  // Event listeners
-  document.addEventListener('keydown', keyDown);
-  document.addEventListener('keyup', keyUp);
-
-  // Start game
-  update();
-</script>
-
+    // Start the game
+    resetGame();
+    gameLoop();
+  </script>
 </body>
 </html>
+
