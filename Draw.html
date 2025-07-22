@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Simple Drawing Game</title>
+  <title>Advanced Drawing Game</title>
   <style>
     body {
       margin: 0;
@@ -18,19 +18,18 @@
       margin-top: 20px;
       cursor: crosshair;
       border-radius: 10px;
+      background: white;
     }
 
     .controls {
       margin-top: 10px;
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       justify-content: center;
     }
 
-    .controls input[type="color"],
-    .controls input[type="range"],
-    .controls button {
+    .controls > * {
       padding: 5px;
       font-size: 16px;
       border-radius: 6px;
@@ -43,66 +42,178 @@
   </style>
 </head>
 <body>
-
-  <h1>🎨 Drawing Game</h1>
+  <h1>🎨 Advanced Drawing Game</h1>
 
   <canvas id="drawCanvas" width="800" height="500"></canvas>
 
   <div class="controls">
     <label>
-      🖌️ Color:
+      🎨 Color:
       <input type="color" id="colorPicker" value="#000000" />
     </label>
 
     <label>
-      🪄 Size:
+      🖌️ Size:
       <input type="range" id="brushSize" min="1" max="50" value="5" />
     </label>
 
+    <label>
+      🔷 Tool:
+      <select id="tool">
+        <option value="brush">Brush</option>
+        <option value="line">Line</option>
+        <option value="rectangle">Rectangle</option>
+        <option value="circle">Circle</option>
+      </select>
+    </label>
+
+    <button id="undoBtn">↩️ Undo</button>
+    <button id="redoBtn">↪️ Redo</button>
     <button id="clearBtn">🧹 Clear</button>
     <button id="saveBtn">💾 Save</button>
+    <input type="file" id="bgUpload" accept="image/*" />
   </div>
 
   <script>
-    const canvas = document.getElementById('drawCanvas');
-    const ctx = canvas.getContext('2d');
-    const colorPicker = document.getElementById('colorPicker');
-    const brushSize = document.getElementById('brushSize');
-    const clearBtn = document.getElementById('clearBtn');
-    const saveBtn = document.getElementById('saveBtn');
+    const canvas = document.getElementById("drawCanvas");
+    const ctx = canvas.getContext("2d");
+    const colorPicker = document.getElementById("colorPicker");
+    const brushSize = document.getElementById("brushSize");
+    const tool = document.getElementById("tool");
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const saveBtn = document.getElementById("saveBtn");
+    const bgUpload = document.getElementById("bgUpload");
 
-    let drawing = false;
+    let isDrawing = false;
+    let startX = 0, startY = 0;
+    let paths = [];
+    let undonePaths = [];
 
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('mouseout', () => drawing = false);
+    function drawLine(x1, y1, x2, y2, color, size) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = size;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
 
-    canvas.addEventListener('mousemove', draw);
+    function drawRect(x1, y1, x2, y2, color, size) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = size;
+      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    }
 
-    function draw(e) {
-      if (!drawing) return;
+    function drawCircle(x1, y1, x2, y2, color, size) {
+      const radius = Math.sqrt((x2 - x1)**2 + (y2 - y1)**2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = size;
+      ctx.beginPath();
+      ctx.arc(x1, y1, radius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
 
+    function drawPath(path) {
+      if (path.type === "brush") {
+        path.points.forEach(p => {
+          ctx.fillStyle = path.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, path.size / 2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      } else if (path.type === "line") drawLine(...path.coords, path.color, path.size);
+      else if (path.type === "rectangle") drawRect(...path.coords, path.color, path.size);
+      else if (path.type === "circle") drawCircle(...path.coords, path.color, path.size);
+    }
+
+    function redraw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      paths.forEach(drawPath);
+    }
+
+    canvas.addEventListener("mousedown", e => {
+      isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      startX = e.clientX - rect.left;
+      startY = e.clientY - rect.top;
+      if (tool.value === "brush") {
+        paths.push({ type: "brush", color: colorPicker.value, size: brushSize.value, points: [{ x: startX, y: startY }] });
+      }
+    });
+
+    canvas.addEventListener("mousemove", e => {
+      if (!isDrawing) return;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-
-      ctx.fillStyle = colorPicker.value;
-      ctx.beginPath();
-      ctx.arc(x, y, brushSize.value / 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    clearBtn.addEventListener('click', () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (tool.value === "brush") {
+        const currentPath = paths[paths.length - 1];
+        currentPath.points.push({ x, y });
+        drawPath(currentPath);
+      }
     });
 
-    saveBtn.addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'drawing.png';
+    canvas.addEventListener("mouseup", e => {
+      isDrawing = false;
+      const rect = canvas.getBoundingClientRect();
+      const endX = e.clientX - rect.left;
+      const endY = e.clientY - rect.top;
+      if (tool.value !== "brush") {
+        const path = {
+          type: tool.value,
+          coords: [startX, startY, endX, endY],
+          color: colorPicker.value,
+          size: brushSize.value
+        };
+        paths.push(path);
+        drawPath(path);
+      }
+      undonePaths = []; // clear redo stack
+    });
+
+    clearBtn.addEventListener("click", () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      paths = [];
+      undonePaths = [];
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (paths.length > 0) {
+        undonePaths.push(paths.pop());
+        redraw();
+      }
+    });
+
+    redoBtn.addEventListener("click", () => {
+      if (undonePaths.length > 0) {
+        paths.push(undonePaths.pop());
+        redraw();
+      }
+    });
+
+    saveBtn.addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.download = "drawing.png";
       link.href = canvas.toDataURL();
       link.click();
     });
-  </script>
 
+    bgUpload.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
 </body>
 </html>
+

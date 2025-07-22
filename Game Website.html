@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ousainou's Game Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(to right, #1e1e2f, #2c3e50);
+        color: #fff;
+        overflow-x: hidden;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      nav h1 {
+        font-size: 1.5rem;
+      }
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+      nav ul li a:hover {
+        color: #00f0ff;
+      }
+      header {
+        padding: 3rem 1rem;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+      header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+      header p {
+        font-size: 1.2rem;
+        color: #ccc;
+      }
+      .games-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 3rem;
+      }
+      .game-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
+        text-align: center;
+      }
+      .game-card:hover {
+        transform: translateY(-5px);
+      }
+      .game-card img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        background: #fff;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .game-card h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+      }
+      .game-card p {
+        color: #aaa;
+        margin-bottom: 1rem;
+      }
+      .game-card a {
+        background-color: #00f0ff;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: #000;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .submission-section {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin: 0 3rem 3rem 3rem;
+        max-width: 700px;
+        color: #ccc;
+      }
+      .submission-section h3 {
+        margin-bottom: 1rem;
+        color: #00f0ff;
+        text-align: center;
+      }
+      .submission-section form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .submission-section label {
+        font-weight: 600;
+        color: #aaa;
+      }
+      .submission-section input,
+      .submission-section textarea {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: none;
+        font-size: 1rem;
+        font-family: 'Outfit', sans-serif;
+      }
+      .submission-section textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+      .submission-section button {
+        background-color: #00f0ff;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        color: #000;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease;
+      }
+      .submission-section button:hover {
+        background-color: #00c1d4;
+      }
+      .about-section {
+        padding: 3rem;
+        background: rgba(255, 255, 255, 0.05);
+        text-align: center;
+      }
+      .about-section h3 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      .about-section p {
+        font-size: 1.1rem;
+        color: #ccc;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+      footer {
+        padding: 2rem;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        color: #aaa;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <h1>Ousainou</h1>
+      <ul>
+        <li><a href="#games">Games</a></li>
+        <li><a href="#submission">Submit Your Game</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <h2>Ousainou's Game Portfolio</h2>
+      <p>Explore and play my original games – made with love and code 🎮</p>
+    </header>
+
+    <section class="games-section" id="games">
+      <!-- Ball Game -->
+      <div class="game-card">
+        <img src="volly-ball-icon-line-for-web-presentation-logo-icon-symbol-free-vector.jpg" alt="Ball Game" />
+        <h2>Bouncing Ball Game</h2>
+        <p>A power-up arcade game where speed increases and chaos ensues!</p>
+        <a href="#">Play Now</a>
+      </div>
+
+      <!-- Drawing Game -->
+      <div class="game-card">
+        <img src="pixel-art-illustration-pencil-pixelated-pencil-pencil-office-icon-pixelated-for-the-pixel-art-game-and-icon-for-website-and-video-game-old-school-retro-vector.jpg" alt="Drawing Game" />
+        <h2>Drawing Game</h2>
+        <p>Let your imagination run wild in this fun and simple drawing experience!</p>
+        <a href="#">Play Now</a>
+      </div>
+    </section>
+
+    <section class="submission-section" id="submission">
+      <h3>Submit Your Game</h3>
+      <p>If you've made a game and want to share it here, fill out the form below and submit!</p>
+      <form id="gameSubmissionForm">
+        <label for="title">Game Title:</label>
+        <input type="text" id="title" name="title" required />
+
+        <label for="description">Game Description:</label>
+        <textarea id="description" name="description" required></textarea>
+
+        <label for="thumbnail">Thumbnail Image URL:</label>
+        <input type="url" id="thumbnail" name="thumbnail" placeholder="https://example.com/image.jpg" required />
+
+        <label for="gameurl">Game Play URL:</label>
+        <input type="url" id="gameurl" name="gameurl" placeholder="https://example.com/play" required />
+
+        <button type="submit">Send Submission</button>
+      </form>
+    </section>
+
+    <section class="about-section" id="about">
+      <h3>About Me</h3>
+      <p>
+        I'm Ousainou Omar Jallow, a passionate young creator who loves building games and exploring the world of tech. My portfolio features games I've built as I grow my skills in design and development.
+      </p>
+    </section>
+
+    <footer id="contact">
+      <p>&copy; 2025 Ousainou Omar Jallow. All rights reserved.</p>
+      <p>Contact: <a href="mailto:ousainouomarjallow@gmail.com" style="color:#00f0ff;">ousainouomarjallow@gmail.com</a></p>
+    </footer>
+
+    <script>
+      const form = document.getElementById('gameSubmissionForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const title = encodeURIComponent(form.title.value.trim());
+        const description = encodeURIComponent(form.description.value.trim());
+        const thumbnail = encodeURIComponent(form.thumbnail.value.trim());
+        const gameurl = encodeURIComponent(form.gameurl.value.trim());
+
+        const subject = encodeURIComponent('New Game Submission');
+        const body = encodeURIComponent(
+          `Game Title: ${form.title.value}\n` +
+          `Description: ${form.description.value}\n` +
+          `Thumbnail URL: ${form.thumbnail.value}\n` +
+          `Game URL: ${form.gameurl.value}\n`
+        );
+
+        // Create a mailto link with pre-filled subject and body
+        const mailtoLink = `mailto:ousainouomarjallow@gmail.com?subject=${subject}&body=${body}`;
+
+        // Open user's email client
+        window.location.href = mailtoLink;
+      });
+    </script>
+  </body>
+</html>
