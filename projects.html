@@ -2,196 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quiz Project - Ousainou</title>
+  <title>My Projects - Ousainou Jallow</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
-      text-align: center;
-      padding: 30px;
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: #f4f4f4;
       color: #333;
+      padding: 50px;
+      text-align: center;
     }
 
     h1 {
       color: #1a73e8;
     }
 
-    .quiz-box {
-      background-color: #fff;
+    .project {
+      background: white;
       padding: 20px;
-      border-radius: 12px;
-      max-width: 700px;
-      margin: auto;
+      margin: 20px auto;
+      max-width: 600px;
+      border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .question {
-      margin: 20px 0;
-      text-align: left;
+    .project h2 {
+      color: #333;
     }
 
-    .option {
-      margin-left: 20px;
+    .project p {
+      font-size: 1em;
+      line-height: 1.5;
     }
 
-    button {
+    a.button {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
       background-color: #1a73e8;
       color: white;
       padding: 10px 20px;
-      border: none;
-      margin: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0c5ed7;
-    }
-
-    .result {
-      margin-top: 20px;
+      border-radius: 8px;
       font-weight: bold;
     }
 
-    .feedback {
-      margin-top: 5px;
-      color: green;
-    }
-
-    .feedback.incorrect {
-      color: red;
-    }
-
-    .coin-counter {
-      font-size: 1.4em;
-      margin-bottom: 20px;
-    }
-
-    #coinCount.animate {
-      animation: bounce 0.5s ease;
-    }
-
-    @keyframes bounce {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.5); }
-      100% { transform: scale(1); }
+    a.button:hover {
+      background-color: #155dc0;
     }
   </style>
 </head>
 <body>
-  <h1>🌟 My Quiz Project</h1>
+  <h1>My Projects</h1>
 
-  <!-- GOLD COINS -->
-  <div class="coin-counter">🪙 <strong>Gold Coins:</strong> <span id="coinCount">0</span></div>
-
-  <div class="quiz-box">
-    <form id="quizForm">
-
-      <div class="question">
-        <p>1. What does HTML stand for?</p>
-        <div class="option"><input type="radio" name="q1" value="a"> Hyper Text Markup Language</div>
-        <div class="option"><input type="radio" name="q1" value="b"> Home Tool Markup Language</div>
-        <div class="option"><input type="radio" name="q1" value="c"> Hyperlinks and Text Management Language</div>
-      </div>
-
-      <div class="question">
-        <p>2. Which tag makes text bold?</p>
-        <div class="option"><input type="radio" name="q2" value="a"> &lt;strong&gt;</div>
-        <div class="option"><input type="radio" name="q2" value="b"> &lt;bld&gt;</div>
-        <div class="option"><input type="radio" name="q2" value="c"> &lt;bold&gt;</div>
-      </div>
-
-      <div class="question">
-        <p>3. What is the correct HTML element for inserting a line break?</p>
-        <div class="option"><input type="radio" name="q3" value="a"> &lt;lb&gt;</div>
-        <div class="option"><input type="radio" name="q3" value="b"> &lt;br&gt;</div>
-        <div class="option"><input type="radio" name="q3" value="c"> &lt;break&gt;</div>
-      </div>
-
-      <div class="question">
-        <p>4. Which tag is used to link an external CSS file?</p>
-        <div class="option"><input type="radio" name="q4" value="a"> &lt;css&gt;</div>
-        <div class="option"><input type="radio" name="q4" value="b"> &lt;style src="style.css"&gt;</div>
-        <div class="option"><input type="radio" name="q4" value="c"> &lt;link rel="stylesheet" href="style.css"&gt;</div>
-      </div>
-
-      <div class="question">
-        <p>5. Where should the &lt;title&gt; tag appear?</p>
-        <div class="option"><input type="radio" name="q5" value="a"> Inside &lt;body&gt;</div>
-        <div class="option"><input type="radio" name="q5" value="b"> Inside &lt;head&gt;</div>
-        <div class="option"><input type="radio" name="q5" value="c"> After &lt;html&gt;</div>
-      </div>
-
-      <button type="button" onclick="checkAnswers()">Submit Answers</button>
-      <div class="result" id="result"></div>
-      <button type="button" onclick="resetQuiz()">Retry</button>
-
-    </form>
+  <div class="project">
+    <h2>My Personal Website</h2>
+    <p>This website you're viewing right now was made by me using HTML, CSS, Git, and GitHub Pages. It's my first ever web project!</p>
   </div>
 
-  <a href="index.html" style="display:block;margin-top:20px;">← Back to Home</a>
+  <div class="project">
+    <h2>Coming Soon</h2>
+    <p>I'm working on other projects that I’ll be uploading here soon — like a to-do list app or a quiz website. Stay tuned!</p>
+  </div>
 
-  <!-- Sound effect -->
-  <audio id="coinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d7b0e508df.mp3?filename=correct-answer-3-107284.mp3"></audio>
-
-  <script>
-    let coins = 0;
-
-    function checkAnswers() {
-      const answers = {
-        q1: 'a',
-        q2: 'a',
-        q3: 'b',
-        q4: 'c',
-        q5: 'b'
-      };
-
-      let score = 0;
-      const coinCount = document.getElementById("coinCount");
-      const sound = document.getElementById("coinSound");
-
-      for (let q in answers) {
-        const selected = document.querySelector(`input[name="${q}"]:checked`);
-        const questionEl = selected ? selected.parentElement.parentElement : null;
-
-        if (selected) {
-          if (selected.value === answers[q]) {
-            score++;
-            coins++;
-            coinCount.textContent = coins;
-
-            // Animate
-            coinCount.classList.add("animate");
-            setTimeout(() => {
-              coinCount.classList.remove("animate");
-            }, 500);
-
-            // Sound
-            sound.currentTime = 0;
-            sound.play();
-
-            if (questionEl) {
-              questionEl.insertAdjacentHTML('beforeend', '<div class="feedback">✅ Correct (+1 🪙)</div>');
-            }
-          } else {
-            if (questionEl) {
-              questionEl.insertAdjacentHTML('beforeend', '<div class="feedback incorrect">❌ Wrong</div>');
-            }
-          }
-        }
-      }
-
-      document.getElementById("result").textContent = `You scored ${score} out of ${Object.keys(answers).length}`;
-    }
-
-    function resetQuiz() {
-      document.getElementById("quizForm").reset();
-      document.getElementById("result").textContent = '';
-      document.querySelectorAll(".feedback").forEach(el => el.remove());
-      coins = 0;
-      document.getElementById("coinCount").textContent = coins;
-    }
-  </script>
+  <a href="index.html" class="button">Back to Home</a>
 </body>
 </html>
