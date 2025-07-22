@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catch the Falling Object Game</title>
+  <style>
+    body {
+      margin: 0;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      background: #444;
+      display: block;
+      border: 2px solid #fff;
+      border-radius: 10px;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      font-weight: bold;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="score">Score: 0</div>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const basket = {
+    width: 80,
+    height: 20,
+    x: canvas.width / 2 - 40,
+    y: canvas.height - 40,
+    speed: 7,
+    dx: 0
+  };
+
+  const object = {
+    x: Math.random() * (canvas.width - 20),
+    y: 0,
+    size: 20,
+    speed: 3
+  };
+
+  let score = 0;
+
+  // Draw basket
+  function drawBasket() {
+    ctx.fillStyle = '#ffd700'; // gold color
+    ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+  }
+
+  // Draw falling object
+  function drawObject() {
+    ctx.fillStyle = '#00bfff'; // deep sky blue
+    ctx.beginPath();
+    ctx.arc(object.x + object.size / 2, object.y + object.size / 2, object.size / 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Clear canvas
+  function clear() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // Move basket
+  function moveBasket() {
+    basket.x += basket.dx;
+
+    // Keep basket inside canvas
+    if (basket.x < 0) basket.x = 0;
+    if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+  }
+
+  // Move object
+  function moveObject() {
+    object.y += object.speed;
+
+    // Check if caught
+    if (
+      object.y + object.size >= basket.y &&
+      object.x + object.size > basket.x &&
+      object.x < basket.x + basket.width
+    ) {
+      score++;
+      document.getElementById('score').innerText = 'Score: ' + score;
+      resetObject();
+    }
+
+    // If missed (object goes below canvas)
+    if (object.y > canvas.height) {
+      alert('Game Over! Your score: ' + score);
+      score = 0;
+      document.getElementById('score').innerText = 'Score: ' + score;
+      resetObject();
+    }
+  }
+
+  // Reset object to top with random x position
+  function resetObject() {
+    object.x = Math.random() * (canvas.width - object.size);
+    object.y = 0;
+  }
+
+  // Update game frame
+  function update() {
+    clear();
+    drawBasket();
+    drawObject();
+    moveBasket();
+    moveObject();
+    requestAnimationFrame(update);
+  }
+
+  // Keyboard handlers
+  function keyDown(e) {
+    if (e.key === 'ArrowRight' || e.key === 'Right') {
+      basket.dx = basket.speed;
+    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+      basket.dx = -basket.speed;
+    }
+  }
+
+  function keyUp(e) {
+    if (
+      e.key === 'ArrowRight' || e.key === 'Right' ||
+      e.key === 'ArrowLeft' || e.key === 'Left'
+    ) {
+      basket.dx = 0;
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('keydown', keyDown);
+  document.addEventListener('keyup', keyUp);
+
+  // Start game
+  update();
+</script>
+
+</body>
+</html>
