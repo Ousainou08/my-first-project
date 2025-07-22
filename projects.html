@@ -1,56 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Projects</title>
+  <title>Quiz Project - Ousainou</title>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
       text-align: center;
-      padding: 20px;
+      padding: 30px;
       color: #333;
     }
 
     h1 {
-      color: #2b72ff;
+      color: #1a73e8;
     }
 
     .quiz-box {
-      background: #fff;
-      border-radius: 10px;
-      padding: 30px;
-      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 700px;
       margin: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .question {
-      margin-bottom: 20px;
+      margin: 20px 0;
       text-align: left;
     }
 
     .option {
-      margin: 5px 0;
+      margin-left: 20px;
     }
 
-    .button, button {
-      background-color: #2b72ff;
+    button {
+      background-color: #1a73e8;
       color: white;
       padding: 10px 20px;
       border: none;
-      border-radius: 8px;
+      margin: 10px;
+      border-radius: 6px;
       cursor: pointer;
-      margin-top: 10px;
+      transition: background-color 0.3s;
     }
 
-    .button:hover, button:hover {
-      background-color: #1a5fd2;
+    button:hover {
+      background-color: #0c5ed7;
     }
 
     .result {
-      font-weight: bold;
       margin-top: 20px;
+      font-weight: bold;
     }
 
     .feedback {
@@ -62,23 +63,29 @@
       color: red;
     }
 
-    #coinCount {
-      font-weight: bold;
-      font-size: 1.2em;
+    .coin-counter {
+      font-size: 1.4em;
+      margin-bottom: 20px;
+    }
+
+    #coinCount.animate {
+      animation: bounce 0.5s ease;
+    }
+
+    @keyframes bounce {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.5); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
 <body>
-  <h1>My Projects</h1>
+  <h1>🌟 My Quiz Project</h1>
 
-  <!-- GOLD COIN COUNTER -->
-  <div style="font-size: 1.2em; margin-bottom: 20px;">
-    🪙 <strong>Gold Coins:</strong> <span id="coinCount">0</span>
-  </div>
+  <!-- GOLD COINS -->
+  <div class="coin-counter">🪙 <strong>Gold Coins:</strong> <span id="coinCount">0</span></div>
 
   <div class="quiz-box">
-    <h2>🌟 HTML & Web Basics Quiz</h2>
-
     <form id="quizForm">
 
       <div class="question">
@@ -123,7 +130,10 @@
     </form>
   </div>
 
-  <a href="index.html" class="button">Back to Home</a>
+  <a href="index.html" style="display:block;margin-top:20px;">← Back to Home</a>
+
+  <!-- Sound effect -->
+  <audio id="coinSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d7b0e508df.mp3?filename=correct-answer-3-107284.mp3"></audio>
 
   <script>
     let coins = 0;
@@ -138,7 +148,8 @@
       };
 
       let score = 0;
-      let total = Object.keys(answers).length;
+      const coinCount = document.getElementById("coinCount");
+      const sound = document.getElementById("coinSound");
 
       for (let q in answers) {
         const selected = document.querySelector(`input[name="${q}"]:checked`);
@@ -148,15 +159,30 @@
           if (selected.value === answers[q]) {
             score++;
             coins++;
-            document.getElementById("coinCount").textContent = coins;
-            if (questionEl) questionEl.insertAdjacentHTML('beforeend', '<div class="feedback">✅ Correct (+1 🪙)</div>');
+            coinCount.textContent = coins;
+
+            // Animate
+            coinCount.classList.add("animate");
+            setTimeout(() => {
+              coinCount.classList.remove("animate");
+            }, 500);
+
+            // Sound
+            sound.currentTime = 0;
+            sound.play();
+
+            if (questionEl) {
+              questionEl.insertAdjacentHTML('beforeend', '<div class="feedback">✅ Correct (+1 🪙)</div>');
+            }
           } else {
-            if (questionEl) questionEl.insertAdjacentHTML('beforeend', '<div class="feedback incorrect">❌ Wrong</div>');
+            if (questionEl) {
+              questionEl.insertAdjacentHTML('beforeend', '<div class="feedback incorrect">❌ Wrong</div>');
+            }
           }
         }
       }
 
-      document.getElementById('result').textContent = `You scored ${score} out of ${total}`;
+      document.getElementById("result").textContent = `You scored ${score} out of ${Object.keys(answers).length}`;
     }
 
     function resetQuiz() {
