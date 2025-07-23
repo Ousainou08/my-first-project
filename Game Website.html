@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ousainou's Game Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
     <style>
@@ -11,87 +11,48 @@
         padding: 0;
         box-sizing: border-box;
       }
+      html {
+        scroll-behavior: smooth;
+      }
       body {
         font-family: 'Outfit', sans-serif;
         background: linear-gradient(to right, #1e1e2f, #2c3e50);
         color: #fff;
         overflow-x: hidden;
-        scroll-behavior: smooth;
       }
       nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 1rem 2rem;
-        background: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.4);
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 999;
       }
       nav h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
       }
       nav ul {
         display: flex;
-        list-style: none;
         gap: 1.5rem;
+        list-style: none;
       }
-      nav ul li a {
-        text-decoration: none;
-        color: #fff;
-        font-weight: bold;
-        transition: color 0.3s;
-      }
-      nav ul li a:hover {
+      nav a {
         color: #00f0ff;
-      }
-      /* Home Screen */
-      .home-screen {
-        height: 90vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        padding: 0 1rem;
-        background: rgba(0, 0, 0, 0.4);
-        margin-bottom: 2rem;
-      }
-      .home-screen h1 {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        color: #00f0ff;
-      }
-      .home-screen p {
-        font-size: 1.5rem;
-        margin-bottom: 2rem;
-        color: #ccc;
-      }
-      .btn-explore {
-        background-color: #00f0ff;
-        color: #000;
-        padding: 1rem 2rem;
-        font-weight: 700;
-        font-size: 1.2rem;
-        border: none;
-        border-radius: 0.75rem;
-        cursor: pointer;
         text-decoration: none;
-        transition: background-color 0.3s ease;
-      }
-      .btn-explore:hover {
-        background-color: #00c1d4;
+        font-weight: 600;
       }
       header {
-        padding: 2rem 1rem;
+        padding: 5rem 2rem;
         text-align: center;
         background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(10px);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
+        animation: fadeIn 1s ease-in-out;
       }
-      header h2 {
-        font-size: 2.5rem;
+      header h1 {
+        font-size: 3rem;
         margin-bottom: 1rem;
       }
       header p {
@@ -100,9 +61,10 @@
       }
       .games-section {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
-        padding: 0 3rem 3rem 3rem;
+        padding: 3rem;
+        animation: slideIn 1s ease-in-out;
       }
       .game-card {
         background: rgba(255, 255, 255, 0.05);
@@ -110,21 +72,20 @@
         padding: 1.5rem;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
         transition: transform 0.3s ease;
-        text-align: center;
       }
       .game-card:hover {
         transform: translateY(-5px);
       }
       .game-card img {
-        width: 150px;
-        height: 150px;
+        width: 100%;
+        height: 160px;
         object-fit: contain;
         background: #fff;
         border-radius: 0.75rem;
         margin-bottom: 1rem;
       }
       .game-card h2 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         margin-bottom: 0.5rem;
       }
       .game-card p {
@@ -132,75 +93,39 @@
         margin-bottom: 1rem;
       }
       .game-card a {
-        background-color: #00f0ff;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        color: #000;
+        color: #00f0ff;
         font-weight: bold;
-        text-decoration: none;
       }
-      .submission-section {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 1rem;
-        padding: 2rem;
-        margin: 0 3rem 3rem 3rem;
-        max-width: 700px;
-        color: #ccc;
+      .submit-section, .about-section {
+        padding: 3rem;
+        background-color: rgba(255, 255, 255, 0.05);
+        margin-top: 2rem;
       }
-      .submission-section h3 {
+      .submit-section h2, .about-section h2 {
+        font-size: 2rem;
         margin-bottom: 1rem;
         color: #00f0ff;
-        text-align: center;
       }
-      .submission-section form {
+      .submit-section form {
         display: flex;
         flex-direction: column;
         gap: 1rem;
+        max-width: 500px;
       }
-      .submission-section label {
-        font-weight: 600;
-        color: #aaa;
-      }
-      .submission-section input,
-      .submission-section textarea {
-        padding: 0.5rem;
-        border-radius: 0.5rem;
+      .submit-section input, .submit-section textarea {
+        padding: 0.75rem;
         border: none;
-        font-size: 1rem;
+        border-radius: 0.5rem;
         font-family: 'Outfit', sans-serif;
       }
-      .submission-section textarea {
-        resize: vertical;
-        min-height: 80px;
-      }
-      .submission-section button {
-        background-color: #00f0ff;
-        border: none;
+      .submit-section button {
         padding: 0.75rem;
+        border: none;
         border-radius: 0.5rem;
+        background-color: #00f0ff;
         color: #000;
-        font-weight: 700;
+        font-weight: bold;
         cursor: pointer;
-        font-size: 1.1rem;
-        transition: background-color 0.3s ease;
-      }
-      .submission-section button:hover {
-        background-color: #00c1d4;
-      }
-      .about-section {
-        padding: 3rem;
-        background: rgba(255, 255, 255, 0.05);
-        text-align: center;
-      }
-      .about-section h3 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-      }
-      .about-section p {
-        font-size: 1.1rem;
-        color: #ccc;
-        max-width: 700px;
-        margin: 0 auto;
       }
       footer {
         padding: 2rem;
@@ -209,29 +134,30 @@
         color: #aaa;
         font-size: 0.9rem;
       }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
     </style>
   </head>
   <body>
     <nav>
       <h1>Ousainou</h1>
       <ul>
-        <li><a href="#home-screen">Home</a></li>
+        <li><a href="#home">Home</a></li>
         <li><a href="#games">Games</a></li>
-        <li><a href="#submission">Submit Your Game</a></li>
+        <li><a href="#submit">Submit</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
 
-    <section class="home-screen" id="home-screen">
-      <h1>Welcome to My Game Portfolio</h1>
-      <p>Discover original games created with passion and creativity.</p>
-      <a href="#games" class="btn-explore">Explore Games</a>
-    </section>
-
-    <header>
-      <h2>Ousainou's Game Portfolio</h2>
-      <p>Explore and play my original games – made with love and code 🎮</p>
+    <header id="home">
+      <h1>Welcome to Ousainou's Game Portfolio</h1>
+      <p>Explore and play original games made with passion, and submit your own!</p>
     </header>
 
     <section class="games-section" id="games">
@@ -240,74 +166,51 @@
         <img src="volly-ball-icon-line-for-web-presentation-logo-icon-symbol-free-vector.jpg" alt="Ball Game" />
         <h2>Bouncing Ball Game</h2>
         <p>A power-up arcade game where speed increases and chaos ensues!</p>
-        <a href="#">Play Now</a>
+        <a href="https://your-ball-game-link.com" target="_blank">Play Now</a>
       </div>
 
       <!-- Drawing Game -->
       <div class="game-card">
         <img src="pixel-art-illustration-pencil-pixelated-pencil-pencil-office-icon-pixelated-for-the-pixel-art-game-and-icon-for-website-and-video-game-old-school-retro-vector.jpg" alt="Drawing Game" />
         <h2>Drawing Game</h2>
-        <p>Let your imagination run wild in this fun and simple drawing experience!</p>
-        <a href="#">Play Now</a>
+        <p>Pixel fun! Make colorful sketches with retro style.</p>
+        <a href="https://your-drawing-game-link.com" target="_blank">Play Now</a>
       </div>
     </section>
 
-    <section class="submission-section" id="submission">
-      <h3>Submit Your Game</h3>
-      <p>If you've made a game and want to share it here, fill out the form below and submit!</p>
-      <form id="gameSubmissionForm">
-        <label for="title">Game Title:</label>
-        <input type="text" id="title" name="title" required />
-
-        <label for="description">Game Description:</label>
-        <textarea id="description" name="description" required></textarea>
-
-        <label for="thumbnail">Thumbnail Image URL:</label>
-        <input type="url" id="thumbnail" name="thumbnail" placeholder="https://example.com/image.jpg" required />
-
-        <label for="gameurl">Game Play URL:</label>
-        <input type="url" id="gameurl" name="gameurl" placeholder="https://example.com/play" required />
-
-        <button type="submit">Send Submission</button>
+    <section class="submit-section" id="submit">
+      <h2>Submit Your Game</h2>
+      <form onsubmit="submitGame(event)">
+        <input type="text" id="gameTitle" placeholder="Game Title" required />
+        <textarea id="gameDesc" placeholder="Game Description" required></textarea>
+        <input type="url" id="gameThumb" placeholder="Thumbnail Image URL" required />
+        <input type="url" id="gameURL" placeholder="Game Play URL" required />
+        <button type="submit">Submit Game</button>
       </form>
     </section>
 
     <section class="about-section" id="about">
-      <h3>About Me</h3>
-      <p>
-        I'm Ousainou Omar Jallow, a passionate young creator who loves building games and exploring the world of tech. My portfolio features games I've built as I grow my skills in design and development.
-      </p>
+      <h2>About This Site</h2>
+      <p>This portfolio showcases games by Ousainou Omar Jallow, a passionate creator and aspiring developer. It features original mini-games and provides a platform for others to share their creations. Whether you're here to play or contribute, you're welcome!</p>
     </section>
 
-    <footer id="contact">
+    <footer>
       <p>&copy; 2025 Ousainou Omar Jallow. All rights reserved.</p>
       <p>Contact: <a href="mailto:ousainouomarjallow@gmail.com" style="color:#00f0ff;">ousainouomarjallow@gmail.com</a></p>
     </footer>
 
     <script>
-      const form = document.getElementById('gameSubmissionForm');
-      form.addEventListener('submit', (e) => {
+      function submitGame(e) {
         e.preventDefault();
+        const title = document.getElementById("gameTitle").value;
+        const desc = document.getElementById("gameDesc").value;
+        const thumb = document.getElementById("gameThumb").value;
+        const url = document.getElementById("gameURL").value;
 
-        const title = encodeURIComponent(form.title.value.trim());
-        const description = encodeURIComponent(form.description.value.trim());
-        const thumbnail = encodeURIComponent(form.thumbnail.value.trim());
-        const gameurl = encodeURIComponent(form.gameurl.value.trim());
-
-        const subject = encodeURIComponent('New Game Submission');
-        const body = encodeURIComponent(
-          `Game Title: ${form.title.value}\n` +
-          `Description: ${form.description.value}\n` +
-          `Thumbnail URL: ${form.thumbnail.value}\n` +
-          `Game URL: ${form.gameurl.value}\n`
-        );
-
-        // Create a mailto link with pre-filled subject and body
-        const mailtoLink = `mailto:ousainouomarjallow@gmail.com?subject=${subject}&body=${body}`;
-
-        // Open user's email client
-        window.location.href = mailtoLink;
-      });
+        const mailto = `mailto:ousainouomarjallow@gmail.com?subject=New Game Submission&body=Title: ${title}%0D%0ADescription: ${desc}%0D%0AThumbnail: ${thumb}%0D%0AGame URL: ${url}`;
+        window.location.href = mailto;
+      }
     </script>
   </body>
 </html>
+
